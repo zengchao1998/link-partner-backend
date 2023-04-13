@@ -1,0 +1,10 @@
+# 生产环境配置 prod
+spring:
+
+  # 配置数据源
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.120.9.159:3306/user_center?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: Zc19981211@
