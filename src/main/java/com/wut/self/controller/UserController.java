@@ -6,13 +6,12 @@ import com.wut.self.common.BaseResponse;
 import com.wut.self.common.ErrorCode;
 import com.wut.self.exception.BusinessException;
 import com.wut.self.model.domain.User;
-import com.wut.self.model.request.UserLoginRequestParams;
-import com.wut.self.model.request.UserRegisterRequestParams;
+import com.wut.self.model.request.UserLoginRequest;
+import com.wut.self.model.request.UserRegisterRequest;
 import com.wut.self.service.UserService;
 import com.wut.self.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,14 +34,11 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
-
     /**
      * 用户注册接口
      */
     @PostMapping("/register")
-    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequestParams requestParams) {
+    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest requestParams) {
         if(requestParams == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
@@ -61,7 +57,7 @@ public class UserController {
      * 用户登录接口
      */
     @PostMapping("/login")
-    public BaseResponse<User> userLogin(@RequestBody UserLoginRequestParams requestParams, HttpServletRequest req) {
+    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest requestParams, HttpServletRequest req) {
         if(requestParams == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }

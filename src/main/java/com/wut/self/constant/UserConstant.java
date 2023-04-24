@@ -30,4 +30,9 @@ public interface UserConstant {
      * redis 缓存key前缀
      */
     String REDIS_KEY_PREFIX = "link_partner:user:recommend:%s";
+
+    /**
+     * 混淆用户密码
+     */
+    String SALT = "center";
 }

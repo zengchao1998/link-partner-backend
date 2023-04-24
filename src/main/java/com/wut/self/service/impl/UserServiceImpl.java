@@ -48,11 +48,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
-    /**
-     * 混淆用户密码
-     */
-    private static final String SALT = "center";
-
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword, String validateCode) {
 

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author zeng
  */
 @Data
-public class UserLoginRequestParams implements Serializable {
+public class UserLoginRequest implements Serializable {
     private static final long serialVersionUID = -903344248002350981L;
     /**
      * 用户账户
