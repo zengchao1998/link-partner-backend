@@ -9,10 +9,8 @@ create table tag
     create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
     update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '更新时间',
     is_deleted  tinyint  default 0                 not null comment '是否删除',
-    constraint unique_tag_name
-        unique (id)
-)
-    collate = utf8_bin;
+    constraint unique_tag_name unique (tag_name)
+);
 
 create index index_userId
     on tag (userId);
