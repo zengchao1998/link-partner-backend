@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
 * @author Administrator
-* @description 针对表【user_team】的数据库操作Service实现
-* @createDate 2023-04-24 12:39:00
+* description 针对表【user_team】的数据库操作Service实现
 */
 @Service
 public class UserTeamServiceImpl extends ServiceImpl<UserTeamMapper, UserTeam>

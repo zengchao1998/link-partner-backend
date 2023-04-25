@@ -8,6 +8,9 @@ import com.wut.self.model.domain.Team;
 import com.wut.self.model.domain.User;
 import com.wut.self.model.dto.TeamQuery;
 import com.wut.self.model.request.TeamAddRequest;
+import com.wut.self.model.request.TeamJoinRequest;
+import com.wut.self.model.request.TeamUpdateRequest;
+import com.wut.self.model.vo.TeamUserVo;
 import com.wut.self.service.TeamService;
 import com.wut.self.service.UserService;
 import com.wut.self.utils.ResultUtils;
@@ -63,11 +66,12 @@ public class TeamController {
     }
 
     @PostMapping("/update")
-    public BaseResponse<Boolean> updateTeam(@RequestBody Team team) {
-        if(team == null) {
+    public BaseResponse<Boolean> updateTeam(@RequestBody TeamUpdateRequest teamUpdateRequest, HttpServletRequest req) {
+        if(teamUpdateRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
-        if(!teamService.updateTeam(team)) {
+        User loginUser = userService.getLoginUser(req);
+        if(!teamService.updateTeam(teamUpdateRequest, loginUser)) {
             throw new BusinessException(ErrorCode.EXECUTE_FAIL, "更新失败");
         }
         return ResultUtils.success(true);
@@ -86,11 +90,9 @@ public class TeamController {
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<Team>> listTeams(TeamQuery teamQuery) {
-        if(teamQuery == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        List<Team> list = teamService.getTeams(teamQuery);
+    public BaseResponse<List<TeamUserVo>> listTeams(TeamQuery teamQuery, HttpServletRequest req) {
+        boolean isAdmin = userService.isAdmin(req);
+        List<TeamUserVo> list = teamService.getTeams(teamQuery, isAdmin);
         return ResultUtils.success(list);
     }
 
@@ -101,5 +103,18 @@ public class TeamController {
         }
         Page<Team> page = teamService.getTeamsForPage(teamQuery);
         return ResultUtils.success(page);
+    }
+
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinTeam(@RequestBody TeamJoinRequest teamJoinRequest, HttpServletRequest req) {
+        if(teamJoinRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(req);
+        boolean result = teamService.joinTeam(teamJoinRequest, loginUser);
+        if(!result) {
+            throw new BusinessException(ErrorCode.EXECUTE_FAIL, "加入失败");
+        }
+        return ResultUtils.success(true);
     }
 }

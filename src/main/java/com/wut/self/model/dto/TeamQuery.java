@@ -7,11 +7,14 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author zeng
- * 查询队伍信息的包装类
+ * 查询队伍信息的包装类(前端自主传值)
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TeamQuery extends PageRequest {
+
+    private static final long serialVersionUID = 961309806720093153L;
+
     /**
      * id
      */
@@ -21,6 +24,11 @@ public class TeamQuery extends PageRequest {
      * 队伍名称
      */
     private String teamName;
+
+    /**
+     * 关键词(队伍名称 & 队伍名)
+     */
+    private String searchText;
 
     /**
      * 队伍描述

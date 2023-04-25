@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Data
 public class PageRequest implements Serializable {
 
+    private static final long serialVersionUID = 1036917100578141759L;
     /**
      * 页面记录数目
      */

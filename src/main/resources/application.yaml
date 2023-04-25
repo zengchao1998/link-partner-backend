@@ -14,7 +14,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/link_partner?characterEncoding=utf-8&useSSL=false
     username: root
-    password: xxxxxx
+    password: zengchao
 
   redis:
     # Redis服务器地址
@@ -53,7 +53,7 @@ mybatis-plus:
       logic-delete-field: isDeleted
       logic-delete-value: 1
       logic-not-delete-value: 0
-  type-aliases-package: com.wut.self.pojo
+  type-aliases-package: com.wut.self.model.domain
 
 server:
   # 指定接口全局路径前缀

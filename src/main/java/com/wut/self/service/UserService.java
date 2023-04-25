@@ -10,7 +10,6 @@ import java.util.List;
 /**
 * @author zeng
 * description 针对表【user】的数据库操作Service
-* createDate 2023-03-13 09:56:46
 */
 public interface UserService extends IService<User> {
     /**

@@ -1,6 +1,5 @@
 package com.wut.self.model.enums;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 /**
@@ -13,7 +12,6 @@ public enum TeamStatusEnum {
     PRIVATE_STATUS(1, "私有状态"),
     SECRET_STATUS(2, "加密状态");
 
-    @EnumValue
     private final int statusCode;
 
     private final String statusDescription;
