@@ -2,8 +2,8 @@ package com.wut.self.jobs;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wut.self.mapper.UserMapper;
 import com.wut.self.model.domain.User;
+import com.wut.self.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.wut.self.constant.UserConstant.REDIS_KEY_PREFIX;
+import static com.wut.self.constant.RedisConstant.REDIS_KEY_USER_PREFIX;
 
 /**
  * @author zeng
@@ -28,7 +28,7 @@ import static com.wut.self.constant.UserConstant.REDIS_KEY_PREFIX;
 public class PreCachingTarget {
 
     @Resource
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -55,7 +55,7 @@ public class PreCachingTarget {
     @Scheduled(cron = "0 59 23 * * *")
     public void doCacheRecommendUsers() {
         // 1. 获取分布式锁
-        String lockName = String.format(REDIS_KEY_PREFIX, "lock");
+        String lockName = String.format(REDIS_KEY_USER_PREFIX, "recommend:lock");
         RLock lock = redissonClient.getLock(lockName);
         /*
          * lock.tryLock 方法参数
@@ -67,10 +67,10 @@ public class PreCachingTarget {
                 // 获取到锁执行业务逻辑
                 for (Long userId : mainUserList) {
                     ValueOperations<String, Object> redisOperations = redisTemplate.opsForValue();
-                    String redisKey = String.format(REDIS_KEY_PREFIX, userId);
+                    String redisKey = String.format(REDIS_KEY_USER_PREFIX, "recommend:" + userId);
                     // 1.1 从数据库中获取数据
                     QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-                    Page<User> users = userMapper.selectPage(new Page<>(PAGE_NUM, PAGE_SIZE), userQueryWrapper);
+                    Page<User> users = userService.page(new Page<>(PAGE_NUM, PAGE_SIZE), userQueryWrapper);
                     // 1.2 将从数据库中获取的数据,同步到缓存中
                     try {
                         // 注意设置过期时间(毫秒、秒、分钟、天)

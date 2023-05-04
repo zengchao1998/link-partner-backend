@@ -8,7 +8,6 @@ import org.springframework.session.MapSession;
 import org.springframework.session.MapSessionRepository;
 import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
-import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,10 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 解决浏览器不支持跨域下的 cookie 操作
  */
-@Configuration
-@EnableSpringHttpSession
+// @Configuration
+// @EnableSpringHttpSession
 public class SessionConfig {
-    @Bean
+
+    // @Bean
     public SessionRepository<MapSession> sessionRepository() {
         return new MapSessionRepository(new ConcurrentHashMap<String, Session>());
     }

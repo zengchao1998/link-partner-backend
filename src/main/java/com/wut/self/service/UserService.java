@@ -3,6 +3,7 @@ package com.wut.self.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wut.self.model.domain.User;
+import com.wut.self.model.vo.UserVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -90,5 +91,13 @@ public interface UserService extends IService<User> {
      * @return Page<User>
      */
     Page<User> getRecommendUsers(long pageNum, long pageSize, User loginUser);
+
+    /**
+     * 匹配多个用户
+     * @param num 匹配数目
+     * @param loginUser 当前用户
+     * @return 推荐用户列表
+     */
+    List<User> matchUsers(long num, User loginUser);
 }
 

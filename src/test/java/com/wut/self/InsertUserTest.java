@@ -106,12 +106,12 @@ public class InsertUserTest {
         int j = 0;
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         // 多线程执行
-        for (int i = 0; i < INSERT_NUM / BATCH_SIZE; i++) {
+        for (int i = 0; i < INSERT_NUM / (2 * BATCH_SIZE); i++) {
             List<User> users = new ArrayList<User>();
             while(true) {
                 User user = new User();
-                user.setUsername("fake_user");
-                user.setUserAccount("fake_user_test");
+                user.setUsername("fakeUser");
+                user.setUserAccount("fakeUserTest");
                 user.setAvatarUrl(USER_AVATAR_DEFAULT_URL);
                 user.setGender(0);
                 user.setUserPassword("123456");
@@ -123,11 +123,11 @@ public class InsertUserTest {
                 user.setTags("[]");
                 users.add(user);
                 j++;
-                if(j % BATCH_SIZE == 0) {
+                if(j % (2 * BATCH_SIZE) == 0) {
                     break;
                 }
             }
-            // 开启异步任务，执行具体的插入操作(每添加10000条数据，就会启动一个线程执行当前异步任务)
+            // 开启异步任务，执行具体的插入操作(每添加20000条数据，就会启动一个线程执行当前异步任务)
             // 指定线程池对象 executorService
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 System.out.println("ThreadName: " + Thread.currentThread().getName());

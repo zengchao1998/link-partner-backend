@@ -12,6 +12,7 @@ public enum ErrorCode {
     EXECUTE_FAIL(40300, "请求执行失败", ""),
     NOT_LOGIN(40100, "未登录", ""),
     NO_AUTH(40101, "没有权限", ""),
+    FORBIDDEN(40301, "禁止操作", ""),
     SYSTEM_ERROR(50000, "系统内部错误", "");
 
     /**

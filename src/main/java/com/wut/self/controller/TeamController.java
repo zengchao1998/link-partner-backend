@@ -2,14 +2,13 @@ package com.wut.self.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wut.self.common.BaseResponse;
+import com.wut.self.common.DeleteRequest;
 import com.wut.self.common.ErrorCode;
 import com.wut.self.exception.BusinessException;
 import com.wut.self.model.domain.Team;
 import com.wut.self.model.domain.User;
 import com.wut.self.model.dto.TeamQuery;
-import com.wut.self.model.request.TeamAddRequest;
-import com.wut.self.model.request.TeamJoinRequest;
-import com.wut.self.model.request.TeamUpdateRequest;
+import com.wut.self.model.request.*;
 import com.wut.self.model.vo.TeamUserVo;
 import com.wut.self.service.TeamService;
 import com.wut.self.service.UserService;
@@ -27,7 +26,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/team")
-@CrossOrigin(origins = {"http://127.0.0.1:5173"}, allowCredentials = "true")
 @Slf4j
 public class TeamController {
 
@@ -54,12 +52,13 @@ public class TeamController {
     }
 
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteTeam(Long teamId) {
-        if(teamId == null) {
+    public BaseResponse<Boolean> deleteTeam(@RequestBody DeleteRequest deleteRequest, HttpServletRequest req) {
+        if(deleteRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
-
-        if(!teamService.removeById(teamId)) {
+        User loginUser = userService.getLoginUser(req);
+        boolean res = teamService.deleteTeam(deleteRequest, loginUser);
+        if(!res) {
             throw new BusinessException(ErrorCode.EXECUTE_FAIL);
         }
         return ResultUtils.success(true);
@@ -89,19 +88,35 @@ public class TeamController {
         return ResultUtils.success(res);
     }
 
+    // todo 展示队伍已加入人数
     @GetMapping("/list")
     public BaseResponse<List<TeamUserVo>> listTeams(TeamQuery teamQuery, HttpServletRequest req) {
         boolean isAdmin = userService.isAdmin(req);
+        // 根据条件获取队伍信息
         List<TeamUserVo> list = teamService.getTeams(teamQuery, isAdmin);
+        // 从队伍id集合中判断当前用户是否加入
+        try {
+            // 如果登录，需要判断当前登录用户是否加入队伍
+            User loginUser = userService.getLoginUser(req);
+            list = teamService.aboutTeams(loginUser, list);
+        } catch (Exception e) {
+            // 如果没有登录直接显示未加入队伍
+            list.forEach(teamUserVo -> {
+                teamUserVo.setHasJoin(false);
+                teamUserVo.setTeamNum(0L);
+            });
+        }
         return ResultUtils.success(list);
     }
 
+    // todo 分页查询队伍
     @GetMapping("/list/page")
-    public BaseResponse<Page<Team>> listTeamsByPage(TeamQuery teamQuery) {
+    public BaseResponse<Page<Team>> listTeamsByPage(TeamQuery teamQuery, HttpServletRequest req) {
         if(teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        Page<Team> page = teamService.getTeamsForPage(teamQuery);
+        boolean isAdmin = userService.isAdmin(req);
+        Page<Team> page = teamService.getTeamsForPage(teamQuery, isAdmin);
         return ResultUtils.success(page);
     }
 
@@ -116,5 +131,32 @@ public class TeamController {
             throw new BusinessException(ErrorCode.EXECUTE_FAIL, "加入失败");
         }
         return ResultUtils.success(true);
+    }
+
+    @PostMapping("/quit")
+    public BaseResponse<Boolean> quitTeam(@RequestBody TeamQuitRequest teamQuitRequest, HttpServletRequest req) {
+        if(teamQuitRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
+        }
+        User loginUser = userService.getLoginUser(req);
+        boolean res = teamService.quitTeam(teamQuitRequest, loginUser);
+        if(!res) {
+            throw new BusinessException(ErrorCode.EXECUTE_FAIL);
+        }
+        return ResultUtils.success(true);
+    }
+
+    @GetMapping("/joined")
+    public BaseResponse<List<TeamUserVo>> getJoinedTeams(HttpServletRequest req) {
+        User loginUser = userService.getLoginUser(req);
+        List<TeamUserVo> joinedTeams = teamService.getJoinedTeams(loginUser);
+        return ResultUtils.success(joinedTeams);
+    }
+
+    @GetMapping("/owner")
+    public BaseResponse<List<Team>> getOwnerTeams(HttpServletRequest req) {
+        User loginUser = userService.getLoginUser(req);
+        List<Team> ownerTeams = teamService.getOwnerTeams(loginUser);
+        return ResultUtils.success(ownerTeams);
     }
 }

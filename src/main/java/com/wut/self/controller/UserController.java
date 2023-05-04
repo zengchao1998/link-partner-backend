@@ -8,6 +8,7 @@ import com.wut.self.exception.BusinessException;
 import com.wut.self.model.domain.User;
 import com.wut.self.model.request.UserLoginRequest;
 import com.wut.self.model.request.UserRegisterRequest;
+import com.wut.self.model.vo.UserVo;
 import com.wut.self.service.UserService;
 import com.wut.self.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,6 @@ import static com.wut.self.constant.UserConstant.*;
  */
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = {"http://127.0.0.1:5173"}, allowCredentials = "true")
 @Slf4j
 public class UserController {
 
@@ -156,6 +156,7 @@ public class UserController {
         return ResultUtils.success(res);
     }
 
+    // todo 推荐多个用户
     @GetMapping("/recommend")
     public BaseResponse<Page<User>> recommendUsers(long pageNum, long pageSize, HttpServletRequest req) {
         // 1. 获取登录用户
@@ -164,4 +165,18 @@ public class UserController {
         Page<User> recommendUsers = userService.getRecommendUsers(pageNum, pageSize, loginUser);
         return ResultUtils.success(recommendUsers);
     }
+
+    /**
+     * 获取最推荐用户(top num)
+     */
+    @GetMapping("/match")
+    public BaseResponse<List<User>> matchUsers(long num, HttpServletRequest req) {
+        if(num <= 0 || num > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(req);
+        List<User> users = userService.matchUsers(num, loginUser);
+        return ResultUtils.success(users);
+    }
+
 }

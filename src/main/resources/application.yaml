@@ -1,8 +1,8 @@
 spring:
 
-  # 指定本地运行环境
+  # 本地运行环境
   profiles:
-   active: dev
+    active: dev
 
   # 项目名称
   application:
@@ -56,11 +56,9 @@ mybatis-plus:
   type-aliases-package: com.wut.self.model.domain
 
 server:
-  # 指定接口全局路径前缀
+  port: 8080
   servlet:
     context-path: /api
     session:
       cookie:
         domain: localhost
-  # 指定服务器端口
-  port: 8080

@@ -1,12 +1,13 @@
 package com.wut.self.config;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author zeng
  */
-// @Configuration
+@Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
@@ -18,11 +19,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 // 设置允许跨域请求的域名
                 // 当 Credentials 为true 时，Origin 不能为星号，需为具体的ip地址 [如果接口不带 cookie,ip 无需设成具体ip]
-                .allowedOrigins("http://127.0.0.1:5173")
+                .allowedOrigins("http://127.0.0.1:5173", "http://localhost:5173",
+                        "http://link-partner-frontend.zengchao1998.com.cn")
                 // 设置允许的请求方法
                 .allowedMethods("*")
-                // 设置允许的请求头
-                .allowedHeaders("*")
                 // 是否允许证书(携带cookie信息)
                 .allowCredentials(true)
                 // 设置允许的方法

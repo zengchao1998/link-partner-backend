@@ -2,6 +2,7 @@ package com.wut.self;
 
 import com.wut.self.model.domain.User;
 import com.wut.self.service.UserService;
+import com.wut.self.utils.AlgorithmUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -60,5 +61,15 @@ class UserServiceTest {
         List<String> tagNameList = Arrays.asList("java", "python");
         List<User> userList = userService.searchUsersByTags(tagNameList);
         Assertions.assertNotNull(userList);
+    }
+
+    @Test
+    void testAlgorithm() {
+        List<String> label1 = Arrays.asList("java", "大一", "正在学spring");
+        List<String> label2 = Arrays.asList("java", "大一", "正在学spring");
+        List<String> label3 = Arrays.asList("python", "大一", "正在学spring");
+        int score1 = AlgorithmUtils.minDistance(label1, label2);
+        int score2 = AlgorithmUtils.minDistance(label1, label3);
+        System.out.println(score1 + "," + score2);
     }
 }
