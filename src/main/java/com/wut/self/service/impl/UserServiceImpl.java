@@ -224,7 +224,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 如果在需要更新的用户信息中，仅包含 id，不包含任何需要更新的内容，直接抛出参数异常
         if (user.getUsername() == null && user.getAvatarUrl() == null && user.getGender() == null
-                && user.getPhone() == null && user.getEmail() == null) {
+                && user.getPhone() == null && user.getEmail() == null && user.getTags() == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 

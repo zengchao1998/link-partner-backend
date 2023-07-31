@@ -84,7 +84,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         }
         String teamPassword = team.getTeamPassword();
         if (statusEnum.equals(TeamStatusEnum.SECRET_STATUS)
-                && (StringUtils.isBlank(teamPassword) || teamPassword.length() < 32)) {
+                && (StringUtils.isBlank(teamPassword) || teamPassword.length() < 4)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码设置不正确");
         }
         // 5. 超时时间检验（大于当前时间、可以不设置）
